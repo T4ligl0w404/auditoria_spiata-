@@ -1,7 +1,7 @@
 ## 1. Evidencia del Ataque
 *   **Módulo:** Command Injection  
 *   **Payload (Texto introducido en el campo IP):** `127.0.0.1; cat /etc/passwd`  
-*   **Visual:** ![SQLi](img_spiata/comandos_spiata.jpeg) 
+*   **Evidencia Visual:** ![SQLi](img_spiata/comandos_spiata.jpeg) 
 
 *(La captura de pantalla demuestra cómo el servidor ejecutó el diagnóstico de red y, acto seguido, expuso el archivo interno `/etc/passwd` con las cuentas del sistema operativo).*
 

@@ -20,7 +20,7 @@ import activosMd from '../docs_spiata/05_activos_spiata.md?raw'
 import matrizMd from '../docs_spiata/06_matriz_spiata.md?raw'
 import controlesMd from '../docs_spiata/07_controles_spiata.md?raw'
 import recuperacionMd from '../docs_spiata/08_recuperacion_spiata.md?raw'
-import promptsMd from '../docs_spiata/09_prompts_spiata.md?raw'
+
 
 import sqliImageUrl from '../docs_spiata/img_spiata/sqli_spiata.jpeg?url'
 import xssImageUrl from '../docs_spiata/img_spiata/xss_spiata.jpeg?url'
@@ -35,7 +35,6 @@ const markdownFiles = {
   '06_matriz_spiata': matrizMd,
   '07_controles_spiata': controlesMd,
   '08_recuperacion_spiata': recuperacionMd,
-  '09_prompts_spiata': promptsMd,
 }
 
 const imageUrls = {
@@ -59,7 +58,6 @@ function App() {
     { id: '06_matriz_spiata', label: '06. Matriz de Riesgos', icon: Grid },
     { id: '07_controles_spiata', label: '07. Controles de Seguridad', icon: CheckSquare },
     { id: '08_recuperacion_spiata', label: '08. Plan de Recuperación', icon: RefreshCw },
-    { id: '09_prompts_spiata', label: '09. Prompts de IA Utilizados', icon: MessageSquare },
   ]
 
   const documentoActivo = documentos.find((doc) => doc.id === seccionActiva) || documentos[0]
@@ -85,22 +83,25 @@ function App() {
     const lines = contenidoMarkdown.split('\n')
     let htmlLines = []
     let inList = false
+    let inTable = false // NUEVO: Estado para saber si estamos procesando un cuadro
 
     lines.forEach((line) => {
       const trimmed = line.trim()
+
+      // Si la línea empieza con una cabecera de Markdown
       if (/^#{1,6}\s+/.test(trimmed)) {
-        if (inList) {
-          htmlLines.push('</ul>')
-          inList = false
-        }
+        if (inList) { htmlLines.push('</ul>'); inList = false; }
+        if (inTable) { htmlLines.push('</tbody></table></div>'); inTable = false; } // Cerrar tabla si corresponde
+        
         const level = trimmed.match(/^#{1,6}/)[0].length
         const content = trimmed.slice(level).trim()
-        htmlLines.push(`<h${level} class="mt-6 mb-3 markdown-heading">${renderInline(content)}</h${level}>
-`)
+        htmlLines.push(`<h${level} class="mt-6 mb-3 markdown-heading">${renderInline(content)}</h${level}>`)
         return
       }
 
+      // Si la línea es un elemento de lista
       if (/^[-*]\s+/.test(trimmed)) {
+        if (inTable) { htmlLines.push('</tbody></table></div>'); inTable = false; }
         if (!inList) {
           htmlLines.push('<ul class="markdown-list">')
           inList = true
@@ -110,31 +111,69 @@ function App() {
         return
       }
 
+      // Si venía una lista y ya no hay guiones, la cerramos
       if (inList) {
         htmlLines.push('</ul>')
         inList = false
       }
 
+      // NUEVO: Lógica para detectar y estructurar Cuadros / Tablas
+      if (/^\|.+/.test(trimmed)) {
+        // Ignorar la línea divisoria del Markdown (|---|---|...)
+        if (/^\|[:\s-|-]+$/.test(trimmed)) {
+          return; 
+        }
+
+        const cells = trimmed.split('|').map(c => c.trim()).filter((_, i, arr) => i > 0 && i < arr.length - 1);
+
+        if (!inTable) {
+          // Es la primera fila, por ende la convertimos en la cabecera (thead) del cuadro
+          inTable = true;
+          htmlLines.push('<div class="overflow-x-auto my-4 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"><table class="w-full text-left border-collapse bg-slate-800 text-white"><thead><tr class="bg-zinc-700 border-b-2 border-black">');
+          cells.forEach(cell => {
+            htmlLines.push(`<th class="p-3 font-black uppercase tracking-wider border-r-2 border-black text-xs">${renderInline(cell)}</th>`);
+          });
+          htmlLines.push('</tr></thead><tbody>');
+        } else {
+          // Son filas normales de contenido (tbody)
+          htmlLines.push('<tr class="border-b border-zinc-700 hover:bg-slate-700/50">');
+          cells.forEach(cell => {
+            htmlLines.push(`<td class="p-3 border-r border-zinc-700 text-xs">${renderInline(cell)}</td>`);
+          });
+          htmlLines.push('</tr>');
+        }
+        return;
+      }
+
+      // Si venía un cuadro y la línea actual ya no tiene tuberías "|", cerramos la estructura
+      if (inTable) {
+        htmlLines.push('</tbody></table></div>');
+        inTable = false;
+      }
+
+      // Línea horizontal
       if (/^---+$/.test(trimmed)) {
         htmlLines.push('<hr class="markdown-hr" />')
         return
       }
 
+      // Línea vacía
       if (trimmed.length === 0) {
         htmlLines.push('')
         return
       }
 
+      // Párrafo estándar
       htmlLines.push(`<p class="markdown-paragraph">${renderInline(trimmed)}</p>`)
     })
 
-    if (inList) {
-      htmlLines.push('</ul>')
-    }
+    // Asegurar cierres al final del archivo
+    if (inList) htmlLines.push('</ul>');
+    if (inTable) htmlLines.push('</tbody></table></div>');
 
     return htmlLines.join('\n')
   }, [contenidoMarkdown])
-
+  
   useEffect(() => {
     setMarkdown(markdownFiles[seccionActiva] || 'No se encontró el archivo solicitado.')
   }, [seccionActiva])

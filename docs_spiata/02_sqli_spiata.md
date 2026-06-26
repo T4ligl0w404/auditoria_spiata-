@@ -27,3 +27,10 @@ Al ingresar `' OR '1'='1` en el campo `"User ID"`, el motor de la base de datos 
 **Política:** Queda prohibido por contrato enlazar datos de usuarios pegándolos como texto directo en las consultas lógicas a la base de datos.
 
 **Control de Mitigación (Código Seguro):** Se deben usar Consultas Parametrizadas. El servidor precompila la orden antes de recibir la entrada del usuario, obligando al sistema a tratar la comilla o el código malicioso simplemente como texto inofensivo.
+
+---
+
+## PHP
+$stmt = $conn->prepare("SELECT nombre, rut_apoderado FROM apoderados WHERE id_usuario = ?");
+$stmt->bind_param("i", $id_usuario); // "i" obliga a que el dato sea tratado estrictamente como un número entero.
+$stmt->execute();
