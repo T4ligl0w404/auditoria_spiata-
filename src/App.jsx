@@ -12,13 +12,42 @@ import {
   MessageSquare 
 } from 'lucide-react'
 
-const markdownImports = import.meta.glob('../docs_spiata/*.md', { as: 'raw' })
-const imageImports = import.meta.glob('../docs_spiata/img_spiata/*', { as: 'url', eager: true })
+import resumenMd from '../docs_spiata/01_resumen_spiata.md?raw'
+import sqliMd from '../docs_spiata/02_sqli_spiata.md?raw'
+import xssMd from '../docs_spiata/03_xss_spiata.md?raw'
+import comandosMd from '../docs_spiata/04_comandos_spiata.md?raw'
+import activosMd from '../docs_spiata/05_activos_spiata.md?raw'
+import matrizMd from '../docs_spiata/06_matriz_spiata.md?raw'
+import controlesMd from '../docs_spiata/07_controles_spiata.md?raw'
+import recuperacionMd from '../docs_spiata/08_recuperacion_spiata.md?raw'
+import promptsMd from '../docs_spiata/09_prompts_spiata.md?raw'
+
+import sqliImageUrl from '../docs_spiata/img_spiata/sqli_spiata.jpeg?url'
+import xssImageUrl from '../docs_spiata/img_spiata/xss_spiata.jpeg?url'
+import comandosImageUrl from '../docs_spiata/img_spiata/comandos_spiata.jpeg?url'
+
+const markdownFiles = {
+  '01_resumen_spiata': resumenMd,
+  '02_sqli_spiata': sqliMd,
+  '03_xss_spiata': xssMd,
+  '04_comandos_spiata': comandosMd,
+  '05_activos_spiata': activosMd,
+  '06_matriz_spiata': matrizMd,
+  '07_controles_spiata': controlesMd,
+  '08_recuperacion_spiata': recuperacionMd,
+  '09_prompts_spiata': promptsMd,
+}
+
+const imageUrls = {
+  'img_spiata/sqli_spiata.jpeg': sqliImageUrl,
+  'img_spiata/xss_spiata.jpeg': xssImageUrl,
+  'img_spiata/comandos_spiata.jpeg': comandosImageUrl,
+}
 
 function App() {
   // Estado para controlar qué documento de docs_spiata estamos visualizando
   const [seccionActiva, setSeccionActiva] = useState('01_resumen_spiata')
-  const [markdown, setMarkdown] = useState('Cargando...')
+  const [markdown, setMarkdown] = useState(markdownFiles['01_resumen_spiata'] || 'Cargando...')
 
   // Mapeo de los archivos que vemos en image_9d9f3d.png
   const documentos = [
@@ -39,8 +68,7 @@ function App() {
   const markdownHtml = useMemo(() => {
     const resolveImageUrl = (src) => {
       const normalized = src.replace(/^\.\//, '')
-      const key = normalized.startsWith('img_spiata/') ? `../docs_spiata/${normalized}` : normalized
-      return imageImports[key] || normalized
+      return imageUrls[normalized] || normalized
     }
 
     const renderInline = (text) => {
@@ -108,16 +136,7 @@ function App() {
   }, [contenidoMarkdown])
 
   useEffect(() => {
-    const importPath = `../docs_spiata/${seccionActiva}.md`
-    const importFile = markdownImports[importPath]
-    if (!importFile) {
-      setMarkdown('No se encontró el archivo solicitado.')
-      return
-    }
-
-    importFile()
-      .then((text) => setMarkdown(text))
-      .catch(() => setMarkdown('Error al cargar el archivo.'))
+    setMarkdown(markdownFiles[seccionActiva] || 'No se encontró el archivo solicitado.')
   }, [seccionActiva])
 
   return (
