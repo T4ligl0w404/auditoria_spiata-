@@ -1,6 +1,6 @@
 ## 1. Evidencia del Ataque
 *   **Módulo:** XSS (Reflected)    
-*   **Payload (Texto introducido en el campo User ID):** `<script>alert('XSS')</script>`  
+*   **Payload (Texto introducido en el campo User ID):** `alert(’XSS’) (tanto al inicio como al final van un script )`  
 
 *   **Evidencia Visual:** ![SQLi](img_spiata/xss_spiata.jpeg)
 
