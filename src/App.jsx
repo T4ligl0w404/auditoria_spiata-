@@ -233,7 +233,6 @@ function App() {
         <section className="md:col-span-2 flex flex-col gap-6">
           <div className="bg-app-inverted text-app-inverted border-4 border-app p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex-1 min-h-[300px]">
             <div className="text-app-accent font-bold text-xs uppercase mb-2 border-b border-zinc-700 pb-2">
-              Visualizando archivo: docs_spiata/{seccionActiva}.md
             </div>
 
             <div className="mt-4">
