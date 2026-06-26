@@ -51,10 +51,10 @@ function App() {
   // Mapeo de los archivos que vemos en image_9d9f3d.png
   const documentos = [
     { id: '01_resumen_spiata', label: '01. Resumen Ejecutivo', icon: FileText },
-    { id: '02_sqli_spiata', label: '02. Vulnerabilidad SQLi', icon: Database },
-    { id: '03_xss_spiata', label: '03. Vulnerabilidad XSS', icon: Code },
-    { id: '04_comandos_spiata', label: '04. Comandos Utilizados', icon: Terminal },
-    { id: '05_activos_spiata', label: '05. Inventario de Activos', icon: Layers },
+    { id: '02_sqli_spiata', label: '02. SQL Injection ', icon: Database },
+    { id: '03_xss_spiata', label: '03. XSS (Reflected)', icon: Code },
+    { id: '04_comandos_spiata', label: '04. Command Injection ', icon: Terminal },
+    { id: '05_activos_spiata', label: '05. Activos', icon: Layers },
     { id: '06_matriz_spiata', label: '06. Matriz de Riesgos', icon: Grid },
     { id: '07_controles_spiata', label: '07. Controles de Seguridad', icon: CheckSquare },
     { id: '08_recuperacion_spiata', label: '08. Plan de Recuperación', icon: RefreshCw },

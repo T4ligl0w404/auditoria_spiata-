@@ -131,15 +131,15 @@ h1, h2, h3 {
 
 .markdown-content th {
   background-color: var(--app-accent) !important; /* Usa el color azul de tu barra superior */
-  color: #8198ca !important; /* Texto del título en blanco */
+  color: #1a2641 !important; /* Texto del título en blanco */
   font-weight: 900;
 }
 
 .markdown-content td {
   color: #000000 !important; /* Texto de descripción en gris muy claro */
-  background-color: rgba(0, 76, 255, 0.5) !important; /* Fondo oscuro semitransparente */
+  background-color: rgb(139, 174, 255) !important; /* Fondo oscuro semitransparente */
 }
 
 .markdown-content tr:hover td {
-  background-color: rgba(0, 98, 255, 0.9) !important; /* Color al pasar el mouse por encima */
+  background-color: rgb(102, 161, 255) !important; /* Color al pasar el mouse por encima */
 }
